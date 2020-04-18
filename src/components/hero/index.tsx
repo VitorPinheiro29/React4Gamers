@@ -3,29 +3,17 @@ import React, {useState} from 'react';
 import './index.css';
 import {TILE_SIZE} from '../../settings/constants';
 import {HEAD_OFFSET} from '../../settings/constants';
+import useHeroMoviment from '../../hooks/useHeroMoviment';
+import {EDirection} from '../../settings/constants';
 
 const initialPosition = {
     x: 15,
-    y: 3
+    y: 3,
 }
 
 const Hero = () => {
-    const [positionState, updatePositionState] = useState(initialPosition);
-    const [direction, updateDirectionState] = useState('RIGHT');
+    const moviment = useHeroMoviment(initialPosition);
 
-    useEventListener('keydown', (event) => {
-        if (event.key === 'ArrowLeft') {
-            updatePositionState({x: positionState.x, y: positionState.y - 1});
-            updateDirectionState('LEFT');
-        }else if (event.key === 'ArrowRight') {
-            updatePositionState({x: positionState.x, y: positionState.y + 1}); 
-            updateDirectionState('RIGHT');   
-        } else if (event.key === 'ArrowUp') {
-            updatePositionState({x: positionState.x + 1, y: positionState.y});
-        }else if (event.key === 'ArrowDown'){
-            updatePositionState({x: positionState.x - 1, y: positionState.y});
-        }
-    })
 
     return (
         <div 
@@ -37,9 +25,11 @@ const Hero = () => {
             backgroundPosition: `0px -${TILE_SIZE - HEAD_OFFSET}px`,
             animation: 'hero-animation 1s steps(4) infinite',
             position: 'absolute',
-            bottom: TILE_SIZE * positionState.x,
-            left: TILE_SIZE * positionState.y,
-            transform: `scaleX(${direction === 'RIGHT' ? 1: -1})`,
+            bottom: TILE_SIZE * moviment.position.x,
+            left: TILE_SIZE * moviment.position.y,
+            transform: `scaleX(${moviment.direction === EDirection.RIGHT ? 1: -1})`,
+            
+            zIndex: 1
             }} 
         />
     )
