@@ -9,8 +9,13 @@ const initialPosition = {
     y: 7
 }
 
-const MiniDemon = () => {
-    const moviment = useEnemyMoviment(initialPosition);
+interface IProps {
+    initialPosition: {x: number, y: number}
+};
+
+const MiniDemon = (props: IProps) => {
+    const moviment = useEnemyMoviment(props.initialPosition);
+
     return (
         <div 
         style={{ 
@@ -21,7 +26,7 @@ const MiniDemon = () => {
             backgroundRepeat: 'no-repeat',
             animation: 'mini-demon-animation 1s steps(4) infinite',
             position: 'absolute',
-            bottom: TILE_SIZE * moviment.position.x,
+            top: TILE_SIZE * moviment.position.x,
             left: TILE_SIZE * moviment.position.y,
             transform: `scaleX(${moviment.direction === EDirection.RIGHT ? 1: -1})`,
             }} 
