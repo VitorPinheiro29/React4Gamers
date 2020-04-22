@@ -5,13 +5,12 @@ import {DEMON_TILE_SIZE} from '../../settings/constants';
 import useEnemyMoviment from '../../hooks/useEnemyMoviment';
 import {EDirection} from '../../settings/constants';
 
-const initialPosition = {
-    x: 5,
-    y: 8
-}
+interface IProps {
+    initialPosition: {x: number; y: number}
+};  
 
-const Demon = () => {
-    const moviment = useEnemyMoviment(initialPosition);
+const Demon = (props: IProps) => {
+    const moviment = useEnemyMoviment(props.initialPosition);
 
     return (
         <div 
@@ -22,9 +21,9 @@ const Demon = () => {
             backgroundRepeat: 'no-repeat',
             animation: 'demon-animation 1s steps(4) infinite',
             position: 'absolute',
-            top: TILE_SIZE * moviment.position.x,
-            left: TILE_SIZE * moviment.position.y,
-            transform: `scaleX(${moviment.direction === EDirection.RIGHT ? 1: -1})`,
+            top: TILE_SIZE * moviment.position.y,
+            left: TILE_SIZE * moviment.position.x,
+            transform: `scaleX(${moviment.direction === EDirection.LEFT ? 1: -1})`,
             }} 
         />
     )

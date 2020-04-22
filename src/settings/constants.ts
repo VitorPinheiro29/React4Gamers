@@ -7,8 +7,8 @@ export const HEAD_OFFSET = 12;
 export const GAME_SIZE = 20*48;
 
 export enum EDirection{
-    LEFT = "ArrowLeft",
-    RIGHT = "ArrowRight",
-    UP = "ArrowUp",
-    DOWN = "ArrowDown",
+    LEFT = "ArrowRight",
+    RIGHT = "ArrowLeft",
+    UP = "ArrowDown",
+    DOWN = "ArrowUp",
 }

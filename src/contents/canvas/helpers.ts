@@ -1,19 +1,20 @@
 import {EDirection} from '../../settings/constants';
+import React, {useState} from 'react';
 
 export function handleNextPosition(direction, position) {
 
     switch(direction) {
         case EDirection.LEFT: 
-            return {x: position.x, y: position.y - 1};
+            return {x: position.x + 1, y: position.y};
 
         case EDirection.RIGHT: 
-            return {x: position.x, y: position.y + 1};
+            return {x: position.x -1, y: position.y};
 
         case EDirection.UP: 
-            return {x: position.x - 1, y: position.y};
+            return {x: position.x, y: position.y +1};
 
         case EDirection.DOWN: 
-            return {x: position.x + 1, y: position.y};
+            return {x: position.x, y: position.y - 1};
 
         default:
         return{x: position.x, y: position.y};
@@ -22,39 +23,74 @@ export function handleNextPosition(direction, position) {
 }
 //TODO VALOR 1 É IGUAL A PAREDE
 
+export enum ECanvas {
+    FLOOR = 0,
+    WALL = 1,
+    DOOR = 2,
+    TRAP = 3,
+    MINI_DEMON = 4,
+    DEMON = 5,
+    CHEST = 6,
+    HERO = 7,
+};
+
+const FL = ECanvas.FLOOR;
+const WL = ECanvas.WALL;
+const DR = ECanvas.DOOR;
+const TR = ECanvas.TRAP;
+const MD = ECanvas.MINI_DEMON;
+const DE = ECanvas.DEMON;
+const CH = ECanvas.CHEST;
+const HE = ECanvas.HERO;
+
+
 export const canvas = [
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    [WL, WL, WL, WL, WL, WL, WL, WL, WL, WL, WL, WL, WL, DR, DR, WL, WL, WL, WL, WL],
+    [WL, WL, WL, WL, WL, WL, WL, WL, WL, WL, WL, WL, WL, DR, DR, WL, WL, WL, WL, WL],
+    [WL, FL, FL, WL, FL, FL, FL, FL, WL, FL, FL, FL, FL, FL, FL, FL, WL, FL, FL, WL],
+    [WL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, WL],
+    [WL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, MD, FL, FL, FL, WL],
+    [WL, FL, FL, FL, FL, DE, FL, TR, FL, FL, FL, FL, TR, FL, FL, FL, FL, FL, FL, WL],
+    [WL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, WL],
+    [WL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, WL],
+    [WL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, MD, FL, FL, FL, FL, FL, FL, FL, WL],
+    [WL, FL, FL, FL, FL, FL, FL, WL, WL, WL, WL, WL, WL, WL, WL, WL, WL, FL, FL, WL],
+    [WL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, WL],
+    [WL, FL, TR, FL, FL, FL, FL, MD, CH, FL, FL, TR, FL, FL, FL, FL, FL, FL, FL, WL],
+    [WL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, WL],
+    [WL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, WL],
+    [WL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, WL],
+    [WL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, MD, FL, FL, FL, WL],
+    [WL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, WL],
+    [WL,HE, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, WL],
+    [WL,FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, WL],
+    [WL, WL, WL, WL, WL, WL, WL, WL, WL, WL, WL, WL, WL, WL, WL, WL, WL, WL, WL, WL]
 ];
 
-function getCanvasMap() {
-    
-    for (let y = 0; y < canvas.length; y++){
-        const canvasY = canvas[y];
+export function checkValidMoviment(nextPosition) {
+    const canvasValue = canvas[nextPosition.y][nextPosition.x];
 
-        for (let x = 0; x < canvasY.length; x++){
-            const canvasYX = canvasY[x];
-
-            const position = {x: x, y: y};
-            const tile = canvas[y][x] || canvasYX;
-        }
+    if (canvasValue === ECanvas.WALL) {
+        return false;
     }
+
+    if(canvasValue === ECanvas.CHEST){
+        alert("Pisou no baú");
+    }
+
+    if(canvasValue === ECanvas.TRAP){
+        alert("Pisou na armadilha");
+    }
+
+    return true;
+}
+
+export function checkValidMovimentEnemies(nextPosition) {
+    const canvasValue = canvas[nextPosition.y][nextPosition.x];
+
+    if (canvasValue === ECanvas.WALL) {
+        return false;
+    }
+
+    return true;
 }

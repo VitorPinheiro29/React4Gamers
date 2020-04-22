@@ -2,8 +2,13 @@ import React from 'react';
 import './index.css';
 import {TILE_SIZE} from '../../settings/constants';
 import {DEMON_TILE_SIZE} from '../../settings/constants';
+import { prependOnceListener } from 'cluster';
 
-const Trap = () => {
+interface IProps {
+    initialPosition: {x: number; y: number}
+};  
+
+const Trap = (props: IProps) => {
     return (
         <div 
         style={{ 
@@ -13,8 +18,8 @@ const Trap = () => {
             backgroundRepeat: 'no-repeat',
             animation: 'trap-animation 1s steps(8) infinite',
             position: 'absolute',
-            bottom: TILE_SIZE * 12,
-            left: TILE_SIZE * 9,
+            top: TILE_SIZE * props.initialPosition.y,
+            left: TILE_SIZE * props.initialPosition.x,
             }} 
         />
     )
