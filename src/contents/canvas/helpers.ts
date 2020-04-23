@@ -1,4 +1,4 @@
-import {EDirection} from '../../settings/constants';
+import {EDirection, EWalker} from '../../settings/constants';
 import React, {useState} from 'react';
 
 export function handleNextPosition(direction, position) {
@@ -54,7 +54,7 @@ export const canvas = [
     [WL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, WL],
     [WL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, WL],
     [WL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, MD, FL, FL, FL, FL, FL, FL, FL, WL],
-    [WL, FL, FL, FL, FL, FL, FL, WL, WL, WL, WL, WL, WL, WL, WL, WL, WL, FL, FL, WL],
+    [WL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, WL],
     [WL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, WL],
     [WL, FL, TR, FL, FL, FL, FL, MD, CH, FL, FL, TR, FL, FL, FL, FL, FL, FL, FL, WL],
     [WL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, WL],
@@ -62,35 +62,32 @@ export const canvas = [
     [WL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, WL],
     [WL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, MD, FL, FL, FL, WL],
     [WL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, WL],
-    [WL,HE, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, WL],
+    [WL,HE, WL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, WL],
     [WL,FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, FL, WL],
     [WL, WL, WL, WL, WL, WL, WL, WL, WL, WL, WL, WL, WL, WL, WL, WL, WL, WL, WL, WL]
 ];
 
-export function checkValidMoviment(nextPosition) {
+export function checkValidMoviment(nextPosition, walker) {
     const canvasValue = canvas[nextPosition.y][nextPosition.x];
 
-    if (canvasValue === ECanvas.WALL) {
-        return false;
-    }
-
-    if(canvasValue === ECanvas.CHEST){
-        alert("Pisou no baú");
-    }
-
-    if(canvasValue === ECanvas.TRAP){
-        alert("Pisou na armadilha");
-    }
-
-    return true;
+    const result = walker === EWalker.HERO ? getHeroValidMovies(canvasValue) : getEnemiesValidMovies(canvasValue);
+    return result;
 }
 
-export function checkValidMovimentEnemies(nextPosition) {
-    const canvasValue = canvas[nextPosition.y][nextPosition.x];
-
-    if (canvasValue === ECanvas.WALL) {
-        return false;
+export function getHeroValidMovies(canvasValue){
+    return {
+        valid: canvasValue === ECanvas.FLOOR || canvasValue === ECanvas.CHEST,
+        dead: canvasValue === ECanvas.TRAP|| canvasValue === ECanvas.MINI_DEMON || canvasValue === ECanvas.DEMON,
+        chest: canvasValue === ECanvas.CHEST,
+        door: canvasValue === ECanvas.DOOR
+    }
+}
+export function getEnemiesValidMovies(canvasValue){
+    return {
+        valid: canvasValue === ECanvas.FLOOR || canvasValue === ECanvas.HERO,
+        dead: false,
+        chest: false,
+        door: false
     }
 
-    return true;
 }

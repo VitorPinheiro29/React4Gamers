@@ -1,8 +1,8 @@
 import React from 'react';
 import Tile from './Tile'; //Tile é cada quadradinho do tabuleiro
-import {canvas} from '../../contents/canvas/helpers';
+import CanvasProvider, { CanvasContext } from '../../contents/canvas';
 
-function getCanvasMap() {
+function getCanvasMap(canvas) {
     const tilesArray = [];
     
     for (let y = 0; y < canvas.length; y++){
@@ -22,7 +22,8 @@ function getCanvasMap() {
 }
 
 function Debugger() {
-    const tiles = getCanvasMap();
+    const canvasContext = React.useContext(CanvasContext);
+    const tiles = getCanvasMap(canvasContext.canvas);
 
     return (
         <div>
