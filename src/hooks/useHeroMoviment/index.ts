@@ -1,5 +1,6 @@
 import useEventListener from '@use-it/event-listener';
 import React, {useState} from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import {EDirection, EWalker} from '../../settings/constants';
 import { CanvasContext } from '../../contents/canvas';
 import { ChestsContext } from '../../contents/chests';
@@ -21,13 +22,20 @@ function useHeroMoviment(initialPosition) {
         };
 
         if (moviment.nextMove.dead){
-            alert("Você morreu!");
+            setTimeout(() => {
+                alert('Você morreu!');
+            })
+            window.location.reload();
         }
 
         if(moviment.nextMove.chest) {
-            chestsContexts.updateOpenedChests();
+            chestsContexts.updateOpenedChests(moviment.nextPosition);
         }
 
+        if (chestsContexts.totalChests === chestsContexts.openedChests.total && moviment.nextMove.door) {
+            alert("Você venceu!");
+            window.location.reload();
+        }
     });
 
     return {

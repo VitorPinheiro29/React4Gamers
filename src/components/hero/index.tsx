@@ -3,8 +3,9 @@ import React, {useState} from 'react';
 import './index.css';
 import {TILE_SIZE} from '../../settings/constants';
 import {HEAD_OFFSET} from '../../settings/constants';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import {EDirection, EWalker} from '../../settings/constants';
 import useHeroMoviment from '../../hooks/useHeroMoviment';
-import {EDirection} from '../../settings/constants';
 
 interface IProps {
     initialPosition: {x: number; y: number}
